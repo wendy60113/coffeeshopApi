@@ -7,17 +7,14 @@ const Sequelize = require('sequelize');
 //設定預設文件路徑,module.filename將會回傳該原始碼所在的文件夾
 const basename = path.basename(module.filename);
 //目前系統環境為開發中，若有設定環境變數，將可以讓程式自適應環境，切換所要連線的伺服器。
-// const env = /*process.env.NODE_ENV || */'development';
+const env = /*process.env.NODE_ENV || */'development';
 //設定檔載入
-// const config = require(`${__dirname}/../config/config.json`)[env];
+const config = require(`${__dirname}/../config/config.json`)[env];
 const db = {};
 
 //初始化資料庫連線
-// let sequelize = new Sequelize(
-//     config.database, config.username, config.password, config
-// );
 let sequelize = new Sequelize(
-    process.env.database, process.env.username, process.env.password, process.env
+    config.database, config.username, config.password, config
 );
 
 //將資料夾內的.js檔案依序實例，並註冊在同一物件之中。

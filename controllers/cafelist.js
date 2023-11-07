@@ -1,13 +1,13 @@
 //載入相對應的model
 const Cafelist = require('../models/index').cafelist;
 const mysql = require('mysql');
-// const env = /*process.env.NODE_ENV || */'development';
-// const config = require(`${__dirname}/../config/config.json`)[env];
+const env = /*process.env.NODE_ENV || */'development';
+const config = require(`${__dirname}/../config/config.json`)[env];
 const connection = mysql.createConnection({
-  host: process.env.host,
-  user: process.env.username,
-  password: process.env.password,
-  database: process.env.database
+  host: config.host,
+  user: config.username,
+  password: config.password,
+  database: config.database
 });
 
 module.exports = {
