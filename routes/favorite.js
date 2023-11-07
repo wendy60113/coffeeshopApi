@@ -75,23 +75,17 @@ const boradController = require('../controllers/index').favorite;
  *                 userId:
  *                   type: int
  *                   example: 1
- * 
- * /favorite/{id}:
+ * /favorite/{userId}/{cafeshopId}:
  *   delete:
  *     summary: 刪除我的最愛資料
  *     tags: [favorite]
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               cafeshopId:
- *                 type: int
- *                 example: 201
- *               userId:
- *                 type: int
- *                 example: 1
+ *     parameters:
+ *      - userId: userId
+ *        in: path
+ *        required: true
+ *      - cafeshopId: cafeshopId
+ *        in: path
+ *        required: true
  *     responses:
  *       204:
  *         description: 刪除成功
@@ -106,7 +100,7 @@ router.post('/', function(req, res, next) {
 	boradController.create(req,res)
 });
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/:userId/:cafeshopId', function(req, res, next) {
 	boradController.destroy(req,res)
 });
 

@@ -9,32 +9,51 @@ const connection = mysql.createConnection({
   password: config.password,
   database: config.database
 });
-
+connection.connect();
 module.exports = {
     //列表項
     list(req, res) {
-        connection.connect();
+        const queryDefault = `
+        UPDATE cafelist
+        SET isFavorite = 0
+        `
+        connection.query(queryDefault, (error, results, fields) => {
+            if (error) {
+                res.status(400).send(error);
+                throw error;
+            }
+            // res.status(200).send(results);
+        });
+
         const query = `
         UPDATE cafelist
         INNER JOIN favorite
         ON cafelist.id = favorite.cafeshopId
         SET isFavorite = 1
         WHERE favorite.userId = ?
-        ORDER BY id DESC`
-        const id = req.params.id
-
-        connection.query(query, [id], (error, results, fields) => {
+        `
+        const { userId } = req.body
+        connection.query(query, [userId,userId], (error, results, fields) => {
             if (error) {
                 res.status(400).send(error);
                 throw error;
             }
-            res.status(200).send(results);
+            // res.status(200).send(results);
         });
-        connection.end();
+
+        const selectQuery = `
+        SELECT * FROM cafelist
+        `
+        connection.query(selectQuery, (selectError, selectResults, selectFields)=>{
+            if (selectError) {
+                res.status(400).send(selectError);
+                throw selectError;
+            }
+            res.status(200).send(selectResults);
+        })
     },
     //創建
     create(req, res) {
-        connection.connect();
         const { name, address, latitude, longitude } = req.body
         const values = [name, address, latitude, longitude]
         const query = `
@@ -49,11 +68,9 @@ module.exports = {
             res.status(200).send(results);
         });
 
-        connection.end();
     },
     //取得某項
     retrieve(req, res) {
-        connection.connect()
         const query = `
         SELECT * FROM cafelist WHERE id=?`
         const id = req.params.id
@@ -67,32 +84,29 @@ module.exports = {
             }
             res.status(200).send(results[0]);
         })
-        connection.end();
     },
     //更新
     update(req, res) {
-        connection.connect()
         const query = `
         UPDATE cafelist
-        SET name=?,address=?
+        SET name=?,address=?,latitude=?,longitude=?
         WHERE id=?
         `
-        const { name, address, id } = req.body
-        connection.query(query,[name,address,id],(error, results, fields)=>{
+        const { name, address, latitude, longitude } = req.body
+        const id = req.params.id
+        connection.query(query,[name,address,latitude,longitude,id],(error, results, fields)=>{
             if (error) {
                 res.status(400).send(error);
                 throw error;
             }
             res.status(200).send(results)
         })
-        connection.end()
     },
     //刪除
     destroy(req, res) {
-        connection.connect()
         const query=`
         DELETE FROM cafelist WHERE id=?`
-        const { id } = req.body
+        const id = req.params.id
         connection.query(query,[id],(error,results,fields)=>{
             if(error){
                 res.status(400).send(error)
@@ -102,6 +116,5 @@ module.exports = {
             }
             res.status(200).send(results)
         })
-        connection.end()
     }
 };

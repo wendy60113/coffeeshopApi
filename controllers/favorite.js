@@ -9,11 +9,10 @@ const connection = mysql.createConnection({
   password: config.password,
   database: config.database
 });
-
+connection.connect();
 module.exports = {
     //列表項
     list(req, res) {
-        connection.connect();
         const query = `
         SELECT id, cafeshopId, userId
         FROM favorite
@@ -26,15 +25,13 @@ module.exports = {
             }
             res.status(200).send(results);
         });
-        connection.end();
     },
     //創建
     create(req, res) {
-        connection.connect();
         const { cafeshopId, userId } = req.body
         const values = [cafeshopId, userId]
         const query = `
-        INSERT INTO cafelist(cafeshopId, userId)
+        INSERT INTO favorite(cafeshopId, userId)
         VALUES(?,?)
         `
         connection.query(query, values, (error, results, fields) => {
@@ -45,12 +42,12 @@ module.exports = {
             res.status(200).send(results);
         });
 
-        connection.end();
     },
     //刪除
     destroy(req, res) {
-        connection.connect()
-        const { userId, cafeshopId } = req.body
+        console.log(req.params)
+        const userId = req.params.userId
+        const cafeshopId = req.params.cafeshopId
         const query = `
         DELETE FROM favorite
         WHERE userId = ? AND cafeshopId = ?
@@ -59,11 +56,8 @@ module.exports = {
             if (error) {
                 res.status(400).send(error);
                 throw error;
-            }else if(!cafeshopId){
-                res.status(400).send('找不到這筆資料')
             }
             res.status(200).send(results);
         })
-        connection.end()
     }
 };

@@ -44,10 +44,19 @@ const boradController = require('../controllers/index').cafelist;
 
 /**
  * @swagger
- * /cafelist:
- *   get:
+ * /cafelist/query:
+ *   post:
  *     summary: 查詢咖啡廳資料列表
  *     tags: [cafeshop]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 example: 1
  *     responses:
  *       200:
  *         description: 查詢成功
@@ -57,6 +66,7 @@ const boradController = require('../controllers/index').cafelist;
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Cafelist'
+ * /cafelist/add:
  *   post:
  *     summary: 新增咖啡廳資料
  *     tags: [cafeshop]
@@ -129,10 +139,6 @@ const boradController = require('../controllers/index').cafelist;
  *   put:
  *     summary: 編輯咖啡廳資料
  *     tags: [cafeshop]
- *     parameters:
- *      - name: id
- *        in: path
- *        required: true
  *     requestBody:
  *       content:
  *         application/json:
@@ -151,6 +157,9 @@ const boradController = require('../controllers/index').cafelist;
  *               longitude:
  *                 type: string
  *                 example: 321,321
+ *               id:
+ *                 type: string
+ *                 example: 306
  *     responses:
  *       200:
  *         description: 編輯成功
@@ -171,19 +180,19 @@ const boradController = require('../controllers/index').cafelist;
  *                 longitude:
  *                   type: string
  *                   example: 321,321
+ * /cafelist:
  *   delete:
  *     summary: 刪除咖啡廳單筆資料
  *     tags: [cafeshop]
- *     parameters:
-  *     requestBody:
+ *     requestBody:
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
  *               id:
- *                 type: int
- *                 example: 201
+ *                 type: string
+ *                 example: 315
  *     responses:
  *       204:
  *         description: 刪除成功
@@ -191,7 +200,7 @@ const boradController = require('../controllers/index').cafelist;
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.post('/query/', function(req, res, next) {
 	boradController.list(req,res)
 });
 
@@ -199,7 +208,7 @@ router.get('/:id', function(req, res, next) {
 	boradController.retrieve(req,res)
 });
 
-router.post('/', function(req, res, next) {
+router.post('/add/', function(req, res, next) {
 	console.log(req.body);
 	boradController.create(req,res)
 });

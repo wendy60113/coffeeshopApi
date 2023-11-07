@@ -9,10 +9,10 @@ const connection = mysql.createConnection({
   password: config.password,
   database: config.database
 });
+connection.connect();
 module.exports = {
     //列表項
     list(req, res) {
-        connection.connect()
         const query = `
         SELECT id, name
         FROM userlist
@@ -24,11 +24,9 @@ module.exports = {
             }
             res.status(200).send(results)
         })
-        connection.end
     },
     //創建
     create(req, res) {
-        connection.connect()
         const { name } = req.body;
         const query = `
         INSERT INTO userlist(name)
@@ -41,7 +39,6 @@ module.exports = {
             }
             res.status(200).send(results)
         })
-        connection.end()
     },
 
 }
