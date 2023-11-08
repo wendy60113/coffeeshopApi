@@ -13,17 +13,23 @@ connection.connect();
 module.exports = {
     //列表項
     list(req, res) {
-        const query = `
-        SELECT id, cafeshopId, userId
+        const joinQuery = `
+        SELECT favorite.id, favorite.cafeshopId, favorite.userId, cafelist.name, cafelist.address, cafelist.isFavorite
         FROM favorite
-        ORDER BY id DESC`;
+        INNER JOIN cafelist
+        ON favorite.cafeshopId=cafelist.id
+        `;
 
-        connection.query(query, (error, results, fields) => {
+        connection.query(joinQuery, (error, results, field) => {
             if (error) {
                 res.status(400).send(error);
                 throw error;
+            }else if(results.length==0){
+                const Msg = '尚未新增我的最愛資料'
+                res.status(200).json({Msg:Msg,list:[]})
+                return
             }
-            res.status(200).send(results);
+            res.status(200).json({Msg:'',list:results})
         });
     },
     //創建
