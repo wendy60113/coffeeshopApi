@@ -13,6 +13,7 @@ connection.connect();
 module.exports = {
     //列表項
     list(req, res) {
+        let resultLen
         const queryDefault = `
         UPDATE cafelist
         SET isFavorite = 0
@@ -22,6 +23,7 @@ module.exports = {
                 res.status(400).send(error);
                 throw error;
             }
+            resultLen = results.affectedRows
             // res.status(200).send(results);
         });
 
@@ -43,13 +45,20 @@ module.exports = {
 
         const selectQuery = `
         SELECT * FROM cafelist
+        ${req.query.page ? 'LIMIT 10 OFFSET ?' : ''}
         `
-        connection.query(selectQuery, (selectError, selectResults, selectFields)=>{
+        const page = (parseInt(req.query.page)-1)*10
+        connection.query(selectQuery, [page], (selectError, selectResults, selectFields)=>{
             if (selectError) {
                 res.status(400).send(selectError);
                 throw selectError;
             }
-            res.status(200).send(selectResults);
+            res.status(200).send({
+                data: selectResults,
+                pagination: {
+                    totalItems: resultLen
+                }
+            });
         })
     },
     //創建

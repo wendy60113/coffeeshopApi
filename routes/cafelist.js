@@ -44,10 +44,14 @@ const boradController = require('../controllers/index').cafelist;
 
 /**
  * @swagger
- * /cafelist/query:
+ * /cafelist/query?page={page}:
  *   post:
  *     summary: 查詢咖啡廳資料列表
  *     tags: [cafeshop]
+ *     parameters:
+ *      - name: page
+ *        in: query
+ *        required: true
  *     requestBody:
  *       content:
  *         application/json:
@@ -200,7 +204,7 @@ const boradController = require('../controllers/index').cafelist;
 
 
 /* GET home page. */
-router.post('/query/', function(req, res, next) {
+router.post('/query', function(req, res, next) {
 	boradController.list(req,res)
 });
 
